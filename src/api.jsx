@@ -6,7 +6,7 @@ export const fetchTop100Movies = async () => {
     'votes.kp': '50000-10000000', // минимум голосов
     sortField: 'rating.kp',
     sortType: '-1',
-    limit: '100',                 // ← вот здесь 100 вместо 10
+    limit: '250',                 // ← вот здесь 100 вместо 10
     selectFields: 'id,name,year,rating,votes,genres',
   });
   
