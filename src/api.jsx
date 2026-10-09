@@ -1,9 +1,12 @@
 // src/api.js
+import { music as staticMusic } from './data';
 
-const KP_BASE = '/api/kp/v1.4';
+const PROXY = '/api/kinopoisk';
 
+/* === Фильмы === */
 export const fetchTopMovies = async (limit = 10) => {
   const params = new URLSearchParams({
+    path: 'movie',                    // endpoint kinopoisk.dev
     'rating.kp': '7-10',
     'votes.kp': '10000-10000000',
     sortField: 'rating.kp',
@@ -12,14 +15,10 @@ export const fetchTopMovies = async (limit = 10) => {
     selectFields: 'id,name,year,rating,votes,genres',
   });
 
-  const res = await fetch(`${KP_BASE}/movie?${params}`);
-
-  if (!res.ok) {
-    const error = await res.json().catch(() => ({}));
-    throw new Error(error.message || `Kinopoisk: ошибка ${res.status}`);
-  }
-
+  const res = await fetch(`${PROXY}?${params}`);
+  if (!res.ok) throw new Error(`Kinopoisk: ошибка ${res.status}`);
   const data = await res.json();
+
   return data.docs.map((m) => ({
     id: m.id,
     title: m.name,
@@ -31,8 +30,10 @@ export const fetchTopMovies = async (limit = 10) => {
   }));
 };
 
+/* === Сериалы === */
 export const fetchTopShows = async (limit = 10) => {
   const params = new URLSearchParams({
+    path: 'movie',
     'rating.kp': '7-10',
     'votes.kp': '5000-10000000',
     type: 'tv-series',
@@ -42,14 +43,10 @@ export const fetchTopShows = async (limit = 10) => {
     selectFields: 'id,name,year,rating,votes,genres',
   });
 
-  const res = await fetch(`${KP_BASE}/movie?${params}`);
-
-  if (!res.ok) {
-    const error = await res.json().catch(() => ({}));
-    throw new Error(error.message || `Kinopoisk: ошибка ${res.status}`);
-  }
-
+  const res = await fetch(`${PROXY}?${params}`);
+  if (!res.ok) throw new Error(`Kinopoisk: ошибка ${res.status}`);
   const data = await res.json();
+
   return data.docs.map((s) => ({
     id: s.id,
     title: s.name,
@@ -61,13 +58,13 @@ export const fetchTopShows = async (limit = 10) => {
   }));
 };
 
-// Музыка — оставляем на статике, у Last.fm нет публичного CORS-доступа
-import { music as staticMusic } from './data';
+/* === Музыка (пока статика) === */
 export const fetchTopMusic = async () => {
   await new Promise((r) => setTimeout(r, 200));
   return staticMusic.map((m) => ({ ...m }));
 };
 
+/* === Загружаем всё сразу === */
 export const fetchAllRatings = async () => {
   const [movies, shows, music] = await Promise.all([
     fetchTopMovies(),
