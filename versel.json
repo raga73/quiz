@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/kp/:path*",
+      "destination": "https://api.kinopoisk.dev/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
