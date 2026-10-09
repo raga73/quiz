@@ -13,3 +13,11 @@ export const fetchTop100Movies = async () => {
   const res = await fetch(`/api/kinopoisk?${params}`);
   // ...
 };
+export const fetchAllRatings = async () => {
+  const movies = await fetchTop100Movies();
+  return { 
+    movies, 
+    shows: [],   // пока пусто
+    music: []    // пока пусто
+  };
+};
